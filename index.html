@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Cepillados para Madrid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes countAnimation {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-count {
+            animation: countAnimation 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-center mb-4">Contador de Cepillados para Madrid</h2>
+            <div class="flex flex-col items-center space-y-4">
+                <div class="text-4xl font-bold">
+                    <span class="animate-count">72</span>/270 cepillados
+                </div>
+                <div class="text-3xl font-semibold">
+                    24 días completados
+                </div>
+                <div class="flex space-x-4">
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" disabled>-</button>
+                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">+</button>
+                </div>
+                <p class="text-center text-gray-600">
+                    198 cepillados y 66 días más para llegar a Madrid
+                </p>
+                <p class="text-center text-gray-600">
+                    ¡Completaste un día!
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
