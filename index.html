@@ -4,40 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contador de Cepillados para Madrid</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes countAnimation {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
-        .animate-count {
-            animation: countAnimation 0.5s ease-out;
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .count {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .days {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .button-group {
+            display: flex;
+            gap: 16px;
+        }
+        button {
+            background-color: #0070f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0051a2;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .info {
+            text-align: center;
+            color: #666;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold text-center mb-4">Contador de Cepillados para Madrid</h2>
-            <div class="flex flex-col items-center space-y-4">
-                <div class="text-4xl font-bold">
-                    <span class="animate-count">72</span>/270 cepillados
-                </div>
-                <div class="text-3xl font-semibold">
-                    24 días completados
-                </div>
-                <div class="flex space-x-4">
-                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" disabled>-</button>
-                    <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">+</button>
-                </div>
-                <p class="text-center text-gray-600">
-                    198 cepillados y 66 días más para llegar a Madrid
-                </p>
-                <p class="text-center text-gray-600">
-                    ¡Completaste un día!
-                </p>
+<body>
+    <div class="card">
+        <h2 class="card-title">Contador de Cepillados para Madrid</h2>
+        <div class="card-content">
+            <div class="count"><span id="cepillados">0</span>/270 cepillados</div>
+            <div class="days"><span id="dias">0</span> días completados</div>
+            <div class="button-group">
+                <button id="decrementBtn">-</button>
+                <button id="incrementBtn">+</button>
             </div>
+            <p class="info" id="infoMadrid"></p>
+            <p class="info" id="infoDia"></p>
         </div>
     </div>
+
+    <script>
+        const TOTAL_CEPILLADOS = 270;
+        const CEPILLADOS_POR_DIA = 3;
+
+        let cepillados = parseInt(localStorage.getItem('cepillados')) || 0;
+
+        const cepilladosEl = document.getElementById('cepillados');
+        const diasEl = document.getElementById('dias');
+        const decrementBtn = document.getElementById('decrementBtn');
+        const incrementBtn = document.getElementById('incrementBtn');
+        const infoMadridEl = document.getElementById('infoMadrid');
+        const infoDiaEl = document.getElementById('infoDia');
+
+        function updateUI() {
+            cepilladosEl.textContent = cepillados;
+            diasEl.textContent = Math.floor(cepillados / CEPILLADOS_POR_DIA);
+
+            decrementBtn.disabled = cepillados === 0;
+            incrementBtn.disabled = cepillados === TOTAL_CEPILLADOS;
+
+            const cepilladosRestantes = TOTAL_CEPILLADOS - cepillados;
+            const diasRestantes = Math.ceil(cepilladosRestantes / CEPILLADOS_POR_DIA);
+
+            if (cepillados === TOTAL_CEPILLADOS) {
+                infoMadridEl.textContent = "¡Has llegado a Madrid!";
+            } else {
+                infoMadridEl.textContent = `${cepilladosRestantes} cepillados y ${diasRestantes} días más para llegar a Madrid`;
+            }
+
+            if (cepillados % CEPILLADOS_POR_DIA === 0) {
+                infoDiaEl.textContent = "¡Completaste un día!";
+            } else {
+                infoDiaEl.textContent = `${CEPILLADOS_POR_DIA - (cepillados % CEPILLADOS_POR_DIA)} cepillados más para completar el día`;
+            }
+
+            localStorage.setItem('cepillados', cepillados);
+        }
+
+        decrementBtn.addEventListener('click', () => {
+            if (cepillados > 0) {
+                cepillados--;
+                updateUI();
+            }
+        });
+
+        incrementBtn.addEventListener('click', () => {
+            if (cepillados < TOTAL_CEPILLADOS) {
+                cepillados++;
+                updateUI();
+            }
+        });
+
+        updateUI();
+    </script>
 </body>
-</html>
+    </html>
